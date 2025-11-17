@@ -9,15 +9,13 @@ use log::debug;
 use parking_lot::Mutex;
 pub use pixel_buffer::PixelBuffer;
 use std::collections::HashMap;
-use std::sync::atomic::{AtomicBool, AtomicU32, AtomicU64, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicU32, Ordering};
 use std::sync::{Arc, OnceLock};
 use tokio::runtime::Runtime;
-use tokio::sync::mpsc;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
 pub use windowless_renderer::WindowlessRenderer;
 
 use crate::api::dart_types::MapSize;
-use crate::core::flutter::pixel_texture::SharedPixelPayloadHolder;
 use crate::core::map_session::{MapSession, SessionID};
 impl MapSize {
     pub fn as_galileo(&self) -> galileo_types::cartesian::Size<u32> {

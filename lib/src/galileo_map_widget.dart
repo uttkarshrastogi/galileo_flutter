@@ -69,7 +69,11 @@ class GalileoMapWidget extends StatefulWidget {
     void Function(MapViewport viewport)? onViewportChanged,
   }) {
     return FutureBuilder(
-      future: GalileoMapController.create(size: size, config: config, layers: layers),
+      future: GalileoMapController.create(
+        size: size,
+        config: config,
+        layers: layers,
+      ),
       builder: (ctx, res) {
         if (res.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -77,13 +81,21 @@ class GalileoMapWidget extends StatefulWidget {
 
         if (res.hasError) {
           return Center(
-            child: Text('Error: ${res.error}', style: const TextStyle(color: Colors.red)),
+            child: Text(
+              'Error: ${res.error}',
+              style: const TextStyle(color: Colors.red),
+            ),
           );
         }
 
         final (controller, err) = res.data!;
         if (err != null) {
-          return Center(child: Text('Error: $err', style: const TextStyle(color: Colors.red)));
+          return Center(
+            child: Text(
+              'Error: $err',
+              style: const TextStyle(color: Colors.red),
+            ),
+          );
         }
 
         return GalileoMapWidget.fromController(
@@ -107,7 +119,7 @@ class _GalileoMapWidgetState extends State<GalileoMapWidget> {
   GalileoMapState? currentState;
   StreamSubscription<GalileoMapState>? streamSubscription;
   late FocusNode _focusNode;
-  Set<LogicalKeyboardKey> _pressedKeys = {};
+  final Set<LogicalKeyboardKey> _pressedKeys = {};
 
   Offset? _lastPointerPosition;
   MapSize? _lastMapSize;
@@ -140,7 +152,11 @@ class _GalileoMapWidgetState extends State<GalileoMapWidget> {
         children: [
           const CircularProgressIndicator(),
           const SizedBox(height: 16),
-          Text(message, style: const TextStyle(fontSize: 16), textAlign: TextAlign.center),
+          Text(
+            message,
+            style: const TextStyle(fontSize: 16),
+            textAlign: TextAlign.center,
+          ),
         ],
       ),
     );
@@ -187,7 +203,7 @@ class _GalileoMapWidgetState extends State<GalileoMapWidget> {
         if (_isPinchScaling) {
           return;
         }
-        
+
         // Request focus for keyboard events
         if (widget.enableKeyboard) {
           _focusNode.requestFocus();
@@ -199,7 +215,10 @@ class _GalileoMapWidgetState extends State<GalileoMapWidget> {
         final mouseEvent = UserEvent.buttonPressed(
           MouseButton.left, // Default to left for touch
           MouseEvent(
-            screenPointerPosition: Point2(x: event.localPosition.dx, y: event.localPosition.dy),
+            screenPointerPosition: Point2(
+              x: event.localPosition.dx,
+              y: event.localPosition.dy,
+            ),
             buttons: const MouseButtonsState(
               left: MouseButtonState.pressed,
               middle: MouseButtonState.released,
@@ -215,7 +234,10 @@ class _GalileoMapWidgetState extends State<GalileoMapWidget> {
         final mouseEvent = UserEvent.buttonReleased(
           MouseButton.left, // Default to left for touch
           MouseEvent(
-            screenPointerPosition: Point2(x: event.localPosition.dx, y: event.localPosition.dy),
+            screenPointerPosition: Point2(
+              x: event.localPosition.dx,
+              y: event.localPosition.dy,
+            ),
             buttons: const MouseButtonsState(
               left: MouseButtonState.released,
               middle: MouseButtonState.released,
@@ -231,7 +253,10 @@ class _GalileoMapWidgetState extends State<GalileoMapWidget> {
         final mouseEvent = UserEvent.buttonReleased(
           MouseButton.left,
           MouseEvent(
-            screenPointerPosition: Point2(x: event.localPosition.dx, y: event.localPosition.dy),
+            screenPointerPosition: Point2(
+              x: event.localPosition.dx,
+              y: event.localPosition.dy,
+            ),
             buttons: const MouseButtonsState(
               left: MouseButtonState.released,
               middle: MouseButtonState.released,
@@ -248,7 +273,10 @@ class _GalileoMapWidgetState extends State<GalileoMapWidget> {
           final scrollEvent = UserEvent.scroll(
             zoomFactor,
             MouseEvent(
-              screenPointerPosition: Point2(x: event.localPosition.dx, y: event.localPosition.dy),
+              screenPointerPosition: Point2(
+                x: event.localPosition.dx,
+                y: event.localPosition.dy,
+              ),
               buttons: const MouseButtonsState(
                 left: MouseButtonState.released,
                 middle: MouseButtonState.released,
@@ -263,7 +291,7 @@ class _GalileoMapWidgetState extends State<GalileoMapWidget> {
         if (_isPinchScaling) {
           return;
         }
-        
+
         if (event.buttons == 0) {
           return;
         }
@@ -278,7 +306,10 @@ class _GalileoMapWidgetState extends State<GalileoMapWidget> {
               MouseButton.left,
               Vector2(dx: delta.dx, dy: delta.dy),
               MouseEvent(
-                screenPointerPosition: Point2(x: currentPosition.dx, y: currentPosition.dy),
+                screenPointerPosition: Point2(
+                  x: currentPosition.dx,
+                  y: currentPosition.dy,
+                ),
                 buttons: const MouseButtonsState(
                   left: MouseButtonState.pressed,
                   middle: MouseButtonState.released,
@@ -298,7 +329,11 @@ class _GalileoMapWidgetState extends State<GalileoMapWidget> {
 
     // Add keyboard support if enabled
     if (widget.enableKeyboard) {
-      mapContent = Focus(focusNode: _focusNode, autofocus: true, child: mapContent);
+      mapContent = Focus(
+        focusNode: _focusNode,
+        autofocus: true,
+        child: mapContent,
+      );
     }
 
     // Add pinch-to-zoom support
@@ -313,16 +348,19 @@ class _GalileoMapWidgetState extends State<GalileoMapWidget> {
             _lastPinchScaleValue = details.scale;
             return;
           }
-          
+
           if (details.scale != _lastPinchScaleValue) {
             // TODO: test this
             final scaleDelta = details.scale / _lastPinchScaleValue;
             final zoomEvent = UserEvent.zoom(
               1.0 / scaleDelta,
-              Point2(x: details.localFocalPoint.dx, y: details.localFocalPoint.dy),
+              Point2(
+                x: details.localFocalPoint.dx,
+                y: details.localFocalPoint.dy,
+              ),
             );
             widget.controller.handleEvent(zoomEvent);
-            
+
             _lastPinchScaleValue = details.scale;
           }
         }
@@ -337,17 +375,20 @@ class _GalileoMapWidgetState extends State<GalileoMapWidget> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final size = Size(constraints.maxWidth, constraints.maxHeight);
-        final newMapSize = MapSize(width: size.width.toInt(), height: size.height.toInt());
-        
-        if (_lastMapSize == null || 
-            _lastMapSize!.width != newMapSize.width || 
+        final newMapSize = MapSize(
+          width: size.width.toInt(),
+          height: size.height.toInt(),
+        );
+
+        if (_lastMapSize == null ||
+            _lastMapSize!.width != newMapSize.width ||
             _lastMapSize!.height != newMapSize.height) {
           _lastMapSize = newMapSize;
           // resize in next frame
           // TODO: test this
           Future.microtask(() => widget.controller.resize(newMapSize));
         }
-        
+
         return mapContent;
       },
     );
@@ -449,7 +490,8 @@ class _GalileoMapWidgetState extends State<GalileoMapWidget> {
           widget.controller.handleEvent(userEvent);
           break;
       }
-    } else if (event is KeyRepeatEvent && _pressedKeys.contains(event.logicalKey)) {
+    } else if (event is KeyRepeatEvent &&
+        _pressedKeys.contains(event.logicalKey)) {
       // Handle repeat events for continuous panning/zooming
       switch (event.logicalKey) {
         case LogicalKeyboardKey.arrowUp:
@@ -570,7 +612,9 @@ class _GalileoMapWidgetState extends State<GalileoMapWidget> {
         }
 
       case GalileoMapState.stopped:
-        return const Center(child: Text('Map stopped', style: TextStyle(fontSize: 16)));
+        return const Center(
+          child: Text('Map stopped', style: TextStyle(fontSize: 16)),
+        );
     }
   }
 
@@ -587,7 +631,9 @@ class _GalileoMapWidgetState extends State<GalileoMapWidget> {
       if (widget.autoDispose) {
         try {
           if (kDebugMode) {
-            debugPrint('Disposing Galileo map controller (${widget.controller.sessionId})');
+            debugPrint(
+              'Disposing Galileo map controller (${widget.controller.sessionId})',
+            );
           }
           await widget.controller.dispose();
         } catch (e) {

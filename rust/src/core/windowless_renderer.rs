@@ -1,14 +1,9 @@
-
 use galileo::galileo_types::cartesian::Size;
 use galileo::render::WgpuRenderer;
+use galileo::Map;
 use log::debug;
 use parking_lot::Mutex;
 use std::sync::Arc;
-use galileo::Map;
-use wgpu::{
-    Device, Extent3d, Queue, Texture, TextureDescriptor, TextureDimension, TextureFormat,
-    TextureUsages, TextureView,
-};
 
 /// Error types for windowless renderer operations.
 #[derive(Debug, thiserror::Error)]
@@ -46,15 +41,15 @@ impl WindowlessRenderer {
                 size.height(),
             ));
         }
-        let mut renderer = WgpuRenderer::new_with_texture_rt(size.clone())
+        let mut renderer = WgpuRenderer::new_with_texture_rt(size)
             .await
             .expect("failed to create renderer");
-        
+
         renderer.set_horizon_options(None);
 
         debug!("Renderer initialized");
 
-        Ok( Self {
+        Ok(Self {
             galileo_renderer: renderer,
             size,
         })
@@ -72,19 +67,20 @@ impl WindowlessRenderer {
         self.size
     }
 
-    pub async fn render(&self, map: &Map) -> Vec<u8>{
+    pub async fn render(&self, map: &Map) -> Vec<u8> {
         debug!("Redner is called for galileo map");
-        
+
         self.galileo_renderer.trim_textures();
 
-        self.galileo_renderer.render(&map).expect("failed to render the map");
-    
-        self.galileo_renderer.get_image()
+        self.galileo_renderer
+            .render(map)
+            .expect("failed to render the map");
+
+        self.galileo_renderer
+            .get_image()
             .await
             .expect("failed to get image bitmap from texture")
-            
     }
-
 }
 
 /// Thread-safe wrapper for WindowlessRenderer.

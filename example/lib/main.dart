@@ -134,7 +134,10 @@ class _GalileoMapPageState extends State<GalileoMapPage> {
               children: [
                 Text(
                   'Status: $statusMessage',
-                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 const Text(
@@ -194,13 +197,28 @@ class _GalileoMapPageState extends State<GalileoMapPage> {
                               children: [
                                 Text(
                                   'Map Controls:',
-                                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                                 SizedBox(height: 4),
-                                Text('• Drag to pan', style: TextStyle(fontSize: 10)),
-                                Text('• Pinch to zoom', style: TextStyle(fontSize: 10)),
-                                Text('• Arrow keys to pan', style: TextStyle(fontSize: 10)),
-                                Text('• +/- to zoom', style: TextStyle(fontSize: 10)),
+                                Text(
+                                  '• Drag to pan',
+                                  style: TextStyle(fontSize: 10),
+                                ),
+                                Text(
+                                  '• Pinch to zoom',
+                                  style: TextStyle(fontSize: 10),
+                                ),
+                                Text(
+                                  '• Arrow keys to pan',
+                                  style: TextStyle(fontSize: 10),
+                                ),
+                                Text(
+                                  '• +/- to zoom',
+                                  style: TextStyle(fontSize: 10),
+                                ),
                               ],
                             ),
                           ),
@@ -221,7 +239,9 @@ class _GalileoMapPageState extends State<GalileoMapPage> {
                   onPressed: () async {
                     // TODO: Implement in Phase 2
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Zoom to location (coming in Phase 2)')),
+                      const SnackBar(
+                        content: Text('Zoom to location (coming in Phase 2)'),
+                      ),
                     );
                   },
                   icon: const Icon(Icons.my_location),
@@ -230,9 +250,11 @@ class _GalileoMapPageState extends State<GalileoMapPage> {
                 ElevatedButton.icon(
                   onPressed: () async {
                     // TODO: Implement in Phase 2
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(const SnackBar(content: Text('Reset view (coming in Phase 2)')));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Reset view (coming in Phase 2)'),
+                      ),
+                    );
                   },
                   icon: const Icon(Icons.refresh),
                   label: const Text('Reset View'),
@@ -240,9 +262,11 @@ class _GalileoMapPageState extends State<GalileoMapPage> {
                 ElevatedButton.icon(
                   onPressed: () async {
                     // TODO: Implement in Phase 2
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(const SnackBar(content: Text('Add layer (coming in Phase 2)')));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Add layer (coming in Phase 2)'),
+                      ),
+                    );
                   },
                   icon: const Icon(Icons.layers),
                   label: const Text('Add Layer'),
@@ -259,7 +283,9 @@ class _GalileoMapPageState extends State<GalileoMapPage> {
             builder:
                 (context) => AlertDialog(
                   title: const Text('About'),
-                  content: const Text('This is a Galileo Flutter integration demo.\n'),
+                  content: const Text(
+                    'This is a Galileo Flutter integration demo.\n',
+                  ),
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.of(context).pop(),

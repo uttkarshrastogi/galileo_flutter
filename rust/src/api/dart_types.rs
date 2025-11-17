@@ -20,7 +20,7 @@ pub struct MapViewport {
     pub y_max: f64,
 }
 
-impl MapViewport{
+impl MapViewport {
     #[frb(ignore)]
     pub fn from_rect(rect: &galileo_types::cartesian::Rect) -> Self {
         Self {
@@ -32,14 +32,12 @@ impl MapViewport{
     }
 }
 
-
 /// Physical size of the map in pixels.
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct MapSize {
     pub width: u32,
     pub height: u32,
 }
-
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct MapInitConfig {
@@ -82,7 +80,7 @@ pub enum LayerConfig {
         url_template: String,
         style_json: String,
         attribution: Option<String>,
-    }
+    },
 }
 
 // Manual type definitions for Dart-friendly versions
@@ -247,9 +245,11 @@ impl UserEvent {
             UserEvent::DragStarted(button, event) => {
                 galileo::control::UserEvent::DragStarted(button.to_galileo(), event.to_galileo())
             }
-            UserEvent::Drag(button, vector, event) => {
-                galileo::control::UserEvent::Drag(button.to_galileo(), vector.to_galileo(), event.to_galileo())
-            }
+            UserEvent::Drag(button, vector, event) => galileo::control::UserEvent::Drag(
+                button.to_galileo(),
+                vector.to_galileo(),
+                event.to_galileo(),
+            ),
             UserEvent::DragEnded(button, event) => {
                 galileo::control::UserEvent::DragEnded(button.to_galileo(), event.to_galileo())
             }

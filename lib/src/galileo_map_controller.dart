@@ -67,7 +67,10 @@ class GalileoMapController {
       final handle = await EngineContext.instance.getEngineHandle();
 
       // Create the map instance
-      final newSessionResp = await rlib.createNewMapSession(engineHandle: handle, config: config);
+      final newSessionResp = await rlib.createNewMapSession(
+        engineHandle: handle,
+        config: config,
+      );
 
       // Create state broadcast
       final stateBroadcast = rx.BehaviorSubject<GalileoMapState>.seeded(
@@ -149,7 +152,9 @@ class GalileoMapController {
   }
 
   /// Get the current map viewport
-  Future<MapViewport?> getViewport() async {}
+  Future<MapViewport?> getViewport() async {
+    return null;
+  }
 
   /// Set the map viewport
   Future<void> setViewport(MapViewport viewport) async {

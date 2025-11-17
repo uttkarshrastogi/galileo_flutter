@@ -120,7 +120,7 @@ pub fn destroy_session(session_id: SessionID) {
         TOKIO_RUNTIME.get().unwrap().block_on(session.terminate());
 
         info!("Session {} destroyed with full cleanup", session_id);
-        ()
+        
     }
     info!("Session {session_id} does not exist")
 }

@@ -3,13 +3,13 @@ pub use crate::core::pixel_buffer::PixelBuffer;
 use crate::core::{WindowlessRenderer, SESSIONS, SESSION_COUNTER, TOKIO_RUNTIME};
 use crate::utils::invoke_on_platform_main_thread;
 use anyhow::anyhow;
-use galileo::{DummyMessenger, galileo_types};
+use galileo::{galileo_types, DummyMessenger};
 use log::{debug, error, info};
 use parking_lot::RwLock;
-use tokio::sync::Mutex;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 use std::time::Duration;
+use tokio::sync::Mutex;
 
 use crate::api::dart_types::{MapInitConfig, MapSize, MapViewport};
 use crate::core::flutter::pixel_texture::{
@@ -34,7 +34,7 @@ impl FlutterCtx {
         Ok(FlutterCtx {
             payload_holder: pixel_texture_payload_holder,
             sendable_texture,
-            texture_id: texture_id,
+            texture_id,
         })
     }
 }
@@ -172,7 +172,10 @@ impl MapSession {
             let flutter_ctx = flctx
                 .as_ref()
                 .ok_or(anyhow!("flutter context not available"))?;
-            (flutter_ctx.payload_holder.clone(), flutter_ctx.sendable_texture.clone())
+            (
+                flutter_ctx.payload_holder.clone(),
+                flutter_ctx.sendable_texture.clone(),
+            )
         };
 
         let is_first_render = self.is_first_render.swap(false, Ordering::Relaxed);
@@ -261,7 +264,7 @@ impl MapSession {
 
     pub async fn terminate(self: Arc<Self>) {
         self.is_alive.store(false, Ordering::SeqCst);
-        
+
         // clear all layers
         {
             let mut map = self.map.lock().await;
@@ -271,7 +274,7 @@ impl MapSession {
             map.set_messenger(None::<DummyMessenger>);
             map.layers_mut().clear();
         }
-        
+
         tokio::time::sleep(Duration::from_millis(500)).await;
 
         let flctx = self.flutter_ctx.write().take();

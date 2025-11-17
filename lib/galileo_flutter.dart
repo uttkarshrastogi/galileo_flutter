@@ -2,7 +2,8 @@ library;
 
 import 'dart:ffi' as ffi;
 
-export 'package:galileo_flutter/src/galileo_map_widget.dart' show GalileoMapWidget;
+export 'package:galileo_flutter/src/galileo_map_widget.dart'
+    show GalileoMapWidget;
 
 import 'src/rust/api/api.dart' as rlib;
 import 'src/rust/frb_generated.dart' as rlib_gen;

@@ -64,12 +64,30 @@ tasks:
     cmds:
       - flutter test
 
+  rust.fix:
+    desc: Fix Rust code issues where possible
+    dir: rust
+    cmds:
+      - cargo clippy --fix --allow-dirty
+
+  flutter.fix:
+    desc: Fix all Dart code issues where possible
+    cmds:
+      - dart fix --apply
+      - dart format .
+
   flutter.get:
     desc: Get Flutter dependencies
     cmds:
       - flutter pub get
 
   # Combined tasks
+  fix:
+    desc: Fix both Rust and Flutter code issues
+    deps:
+      - task: rust.fix
+      - task: flutter.fix
+
   fmt:
     desc: Format both Rust and Flutter code
     deps:

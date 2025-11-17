@@ -1,21 +1,10 @@
-use galileo::galileo_types;
-use galileo::layer::raster_tile_layer::RasterTileLayerBuilder;
 use irondash_texture::{
-    BoxedPixelData, PayloadProvider, PixelDataProvider, SendableTexture, SimplePixelData, Texture,
+    BoxedPixelData, PayloadProvider, PixelDataProvider, SendableTexture, SimplePixelData,
 };
-use log::{debug, error, info, warn};
 use parking_lot::Mutex;
-use std::collections::HashMap;
-use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
-use std::time::Duration;
-use tokio::sync::mpsc;
 
-use crate::api::dart_types::{MapInitConfig, MapSize};
-use crate::core::galileo_ref::create_galileo_map;
-use crate::core::{
-    MapSession, PixelBuffer, SessionID, WindowlessRenderer, SESSIONS, TOKIO_RUNTIME,
-};
+use crate::api::dart_types::MapSize;
 use crate::utils::invoke_on_platform_main_thread;
 
 /// medium that we will use to set pixel data
