@@ -52,56 +52,12 @@ class GalileoMapPage extends StatefulWidget {
 class _GalileoMapPageState extends State<GalileoMapPage> {
   MapViewport? currentViewport;
   String statusMessage = 'Loading...';
-  String? _vectorTileStyle;
+  String? _layerConfigString;
+  LayerConfig? _layerConfig;
 
-  @override
-  void initState() {
-    super.initState();
-    _loadVectorTileStyle();
-  }
+  void _onViewportChanged(MapViewport viewport) {}
 
-  Future<void> _loadVectorTileStyle() async {
-    try {
-      final style = await rootBundle.loadString("assets/vt_style.json");
-      debugPrint('Style: $style');
-      setState(() {
-        _vectorTileStyle = style;
-        statusMessage = 'Map is ready';
-      });
-    } catch (e) {
-      debugPrint('Error loading vector tile style: $e');
-      setState(() {
-        statusMessage = 'Error loading style: $e';
-      });
-    }
-  }
-
-
-  void _onViewportChanged(MapViewport viewport) {
-    // setState(() {
-    //   currentViewport = viewport;
-    //   statusMessage = "viewport: ${viewport.toString()}";
-    // });
-  }
-
-  void _onMapTap(double x, double y) {
-    // setState(() {
-    //   statusMessage =
-    //       'Tapped at: (${x.toStringAsFixed(1)}, ${y.toStringAsFixed(1)})';
-    // });
-
-    // // Clear the message after 2 seconds
-    // Future.delayed(const Duration(seconds: 2), () {
-    //   if (mounted) {
-    //     setState(() {
-    //       statusMessage =
-    //           currentViewport != null
-    //               ? "viewport: ${currentViewport}"
-    //               : 'Map is ready';
-    //     });
-    //   }
-    // });
-  }
+  void _onMapTap(double x, double y) {}
 
   @override
   Widget build(BuildContext context) {
@@ -117,20 +73,87 @@ class _GalileoMapPageState extends State<GalileoMapPage> {
             width: double.infinity,
             padding: const EdgeInsets.all(16.0),
             color: Colors.grey[100],
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Row(
               children: [
-                Text(
-                  'Status: $statusMessage',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Status: $statusMessage',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      const Text(
+                        'Controls: Arrow keys to pan, +/- to zoom, mouse/touch to interact',
+                        style: TextStyle(fontSize: 12, color: Colors.grey),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 4),
-                const Text(
-                  'Controls: Arrow keys to pan, +/- to zoom, mouse/touch to interact',
-                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                DropdownButton(
+                  value: _layerConfigString,
+                  onChanged: (value) async {
+                    switch (value) {
+                      case 'osm_tile_layer':
+                        setState(() {
+                          _layerConfig = LayerConfig.osm();
+                          _layerConfigString = 'osm_tile_layer';
+                          statusMessage = 'Map is ready';
+                        });
+                      case 'vector_tile_layer_1':
+                        setState(() {
+                          statusMessage = 'Loading...';
+                          _layerConfigString = 'vector_tile_layer_1';
+                        });
+                        final style = await rootBundle.loadString(
+                          "assets/vt_style.json",
+                        );
+                        if (mounted) {
+                          setState(() {
+                            _layerConfig = LayerConfig.vectorTiles(
+                              urlTemplate: MAP_TILER_URL_TEMPLATE,
+                              styleJson: style,
+                            );
+                            statusMessage = 'Map is ready';
+                          });
+                        }
+                      case 'vector_tile_layer_2':
+                        setState(() {
+                          statusMessage = 'Loading...';
+                          _layerConfigString = 'vector_tile_layer_2';
+                        });
+                        final style = await rootBundle.loadString(
+                          "assets/simple_style.json",
+                        );
+                        if (mounted) {
+                          setState(() {
+                            _layerConfig = LayerConfig.vectorTiles(
+                              urlTemplate: MAP_TILER_URL_TEMPLATE,
+                              styleJson: style,
+                            );
+                            statusMessage = 'Map is ready';
+                          });
+                        }
+                    }
+                  },
+                  items: [
+                    DropdownMenuItem(
+                      value: 'osm_tile_layer',
+                      child: Text('OSM Tile Layer'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'vector_tile_layer_1',
+                      child: Text('Vector Tile Layer 1'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'vector_tile_layer_2',
+                      child: Text('Vector Tile Layer 2'),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -140,18 +163,11 @@ class _GalileoMapPageState extends State<GalileoMapPage> {
             child: Container(
               decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
               child:
-                  _vectorTileStyle == null
+                  _layerConfig == null
                       ? const Center(child: CircularProgressIndicator())
                       : GalileoMapWidget.fromConfig(
                         size: const MapSize(width: 800, height: 600),
-                        layers: [
-                          // const LayerConfig.osm(),
-                          LayerConfig.vectorTiles(
-                            urlTemplate:
-                                MAP_TILER_URL_TEMPLATE,
-                            styleJson: _vectorTileStyle!,
-                          ),
-                        ],
+                        layers: [_layerConfig!],
                         config: MapInitConfig(
                           backgroundColor: (0.1, 0.1, 0, 0.5),
                           enableMultisampling: true,
